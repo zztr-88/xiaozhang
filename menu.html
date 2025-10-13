@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>商家菜单</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="menu-page">
+  <header>
+    <h1>CampusEats</h1>
+    <nav>
+      <a href="index.html">首页</a>
+      <span id="adminLink"></span>
+      <button onclick="logout()">退出</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="store-header">
+      <h2 id="storeName">加载中...</h2>
+      <p id="storeDesc"></p>
+      <p>起送价: <strong id="minPrice"></strong></p>
+    </section>
+
+    <section class="products-list" id="productsContainer">
+      <!-- 商品将动态加载 -->
+    </section>
+  </main>
+
+  <!-- 支付弹窗 -->
+  <div class="payment-modal">
+    <div class="payment-box">
+      <h3>扫码支付</h3>
+      <img src="" alt="支付二维码" />
+      <button onclick="closePaymentModal()">关闭</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

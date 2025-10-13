@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>商家管理 - 校园外卖</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="admin-page">
+  <header>
+    <h1>CampusEats</h1>
+    <nav>
+      <a href="index.html">首页</a>
+      <span id="adminLink"></span>
+      <button onclick="logout()">退出</button>
+    </nav>
+  </header>
+
+  <main>
+    <h2>商家管理</h2>
+    <button onclick="showAddForm()">添加商家</button>
+
+    <form id="addStoreForm" style="display: none;">
+      <input type="text" id="storeName" placeholder="商家名称" required />
+      <input type="url" id="storeImg" placeholder="图片链接" required />
+      <input type="number" id="rating" placeholder="评分" step="0.1" value="4.5" />
+      <input type="text" id="desc" placeholder="描述" />
+      <button type="button" onclick="addStore()">确认添加</button>
+      <button type="button" onclick="hideAddForm()">取消</button>
+    </form>
+
+    <div id="storeList"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
