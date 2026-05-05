@@ -553,11 +553,16 @@
             <div class="footer-note">此健康证信息已上报平台 </div>
         </div>
         </div>
-            <a href="#" onclick="submitToQMTJ(); return false;" rel="noopener noreferrer">
-                <i></i> 🔍全国体检机构查询
-            </a>
-            <button id="downloadBtn" class="btn btn-primary hide"
-                style="margin-top:25px;padding: 12px 20px;width: auto;">
+        <a href="#" onclick="
+             const win = window.open('', '_blank');
+             setTimeout(() => {
+               win.location.href = 'https://www.qmtj.net/029';
+             }, 300);
+             return false;
+           " rel="noopener noreferrer" style="color: #666; text-decoration: underline;">
+            <i></i> 🔍全国体检机构查询
+        </a>
+        <button id="downloadBtn" class="btn btn-primary hide"     style="margin-top:25px;padding: 12px 20px;width: auto;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path
                         d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
@@ -569,20 +574,5 @@
 
             </p>
     </section>
-    <script>
-function submitToQMTJ() {
-  const form = document.createElement('form');
-  form.method = 'POST';
-  form.action = 'https://www.qmtj.net/029';
-  // 可选：添加空参数伪装成表单提交
-  const input = document.createElement('input');
-  input.type = 'hidden';
-  input.name = 'dummy';
-  input.value = '1';
-  form.appendChild(input);
-  document.body.appendChild(form);
-  form.submit();
-  document.body.removeChild(form);
-}
-</script>
+    
 </body>
