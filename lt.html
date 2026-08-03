@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>唐文侨的健康证明-电子健康证查询</title>
+        <style>
+            body,html {
+                overflow-x: hidden
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 12px;
+                padding-bottom: 40px
+            }
+
+            .hosp-intro,.other-intro {
+                padding: 10px
+            }
+
+            .hosp-intro img,.other-intro img {
+                width: 100%
+            }
+
+            .cardinfo {
+                display: flex;
+                justify-content: center;
+                margin: 20px 0 20px 0;
+                font-size: 14px
+            }
+
+            .cardinfo .card {
+                width: 350px;
+                height: 220px;
+                position: relative
+            }
+
+            .card .info {
+                width: 260px;
+                padding: 0 10px;
+                position: absolute;
+                z-index: 999
+            }
+
+            .card .card-bg {
+                position: absolute;
+                width: 350px;
+                height: 220px;
+                z-index: 1;
+                left: 0;
+                top: 0;
+                border-radius: 10px
+            }
+
+            a {
+                text-decoration: none
+            }
+
+            .card .bh {
+                white-space: nowrap
+            }
+
+            .card .info * {
+                font-weight: bold;
+                font-size: 14px;
+                font-family: "仿宋",FangSong,STFangsong,serif
+            }
+
+            .card .xm span {
+                display: inline-block;
+                width: calc(50%)
+            }
+
+            .card .info div {
+                margin-bottom: 5px
+            }
+
+            .card .headimg {
+                position: absolute;
+                right: 12px;
+                top: 45px;
+                width: 80px;
+                height: 100px;
+                z-index: 999;
+                border-radius: 10px 10px 10px 10px
+            }
+
+            .cardinfo .hosp {
+                position: absolute;
+                bottom: 7px;
+                margin-left: 10px;
+                color: #fff;
+                z-index: 999
+            }
+
+            .page-foot {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+                display: flex;
+                justify-content: space-around;
+                height: 50px;
+                line-height: 50px;
+                border-top: 1px solid #f2f2f2;
+                text-align: center;
+                background-color: #fff
+            }
+
+            .page-foot div {
+                width: 50%;
+                border-right: 1px solid #f2f2f2
+            }
+
+            .page-foot div:last-child {
+                border-right: 0px
+            }
+
+            .cardinfo .ygqimg {
+                width: 120px;
+                position: absolute;
+                right: 100px;
+                top: calc(40% - 10px);
+                z-index: 1000;
+                opacity: 0.7
+            }
+
+            .gz {
+                background-color: #5bc0de;
+                text-align: center;
+                padding: 10px 0;
+                line-height: 25px
+            }
+
+            .gz a {
+                background-color: #fff;
+                display: inline-block;
+                padding: 0 15px;
+                border-radius: 15px;
+                cursor: pointer;
+                position: absolute;
+                right: 10px
+            }
+
+            .gz a:link {
+                color: #000;
+                text-decoration: none
+            }
+
+            .gz a:visited {
+                color: #000;
+                text-decoration: none
+            }
+
+            .gz a:hover {
+                color: #000;
+                text-decoration: none
+            }
+
+            .gz a:active {
+                color: #000;
+                text-decoration: none
+            }
+
+            .cardpic {
+                min-width: 350px
+            }
+
+            #qrcode {
+                width: 55px;
+                height: 55px;
+                z-index: 999;
+                border-radius: 5px;
+                background-color: blue
+            }
+
+            .qr-container {
+                display: flex;
+                align-items: center;
+                position: absolute;
+                gap: 3px;
+                right: 10px;
+                top: 155px;
+                width: fit-content;
+                z-index: 999;
+            }
+
+            .vertical-text {
+                writing-mode: vertical-rl;
+                text-orientation: upright;
+                font-size: 10px;
+                z-index: 999;
+                font-family: "仿宋",FangSong,STFangsong,serif
+            }
+
+            #qrcode canvas,#qrcode img {
+                width: 100%;
+                height: 100%
+            }
+
+            #saveToImg {
+                color: red;
+                margin-left: 20px;
+                padding: 10px 0
+            }
+
+            .applyyj {
+                text-align: center;
+                background-color: #eba753;
+                color: #ffffff;
+                height: 40px;
+                line-height: 40px;
+                border-radius: 10px;
+                width: calc(100% - 80px);
+                margin-left: 40px;
+                margin-top: 20px
+            }
+
+            .showCardImg {
+                z-index: 9999999;
+                position: fixed;
+                height: 100%;
+                width: 100%;
+                left: 0;
+                top: 0;
+                display: none
+            }
+
+            .showCardImgMask {
+                position: fixed;
+                z-index: 9998;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background-color: #515151;
+                opacity: 0.4;
+                overflow: none;
+                display: none
+            }
+
+            .showCardImgimg {
+                width: 80%;
+                margin-left: 10%;
+                margin-top: 20%;
+                background-color: #FFFFFF;
+                border-radius: 10px;
+                padding-bottom: 20px
+            }
+
+            .showCardImgimg img {
+                width: 100%
+            }
+
+            .closeModel {
+                float: right;
+                color: #007AFF;
+                padding: 0 20px
+            }
+        </style>
+    </head>
+    <body>
+        <section class="cardpic" id="certificatePreview">
+            <div class="cardinfo">
+                <div class="card">
+                    <div class="info">
+                        <div class="fzdw" style="margin-top: 40px">
+                            编 &emsp;号: <span id="previewId1">2607032911</span>
+                        </div>
+                        <div class="bh" style="margin-top: -3px">
+                            姓 &emsp;名: <span id="previewName">唐文侨</span>
+                        </div>
+                        <div class="bh" style="margin-top: -3px">
+                            从业类别: <span id="previewCategory">食品卫生</span>
+                        </div>
+                        <div class="fzri" style="margin-top: -3px">
+                            发证日期: <span id="previewDate">2026-07-31</span>
+                        </div>
+                        <div class="bh" style="margin-top: -3px">
+                            有效期限: <span id="previewDate2">一年</span>
+                        </div>
+                        <div class="bh" style="margin-top: -3px">体检项目: 肝功能 胸片 肠道致病菌检测</div>
+                        <div class="text" style="margin-top: -3px">
+                            发证单位: <span id="previewId">柳州市疾病预防控制中心</span>
+                        </div>
+                    </div>
+
+                    <img id="previewPhotoImg" src="789.png" class="headimg"/>
+                    <img src="dingyi.png" class="ygqimg"/>
+                    <img src="lz.png" class="card-bg"/>
+                    <div class="qr-container">
+                        <div id="qrcode">
+                            <img src="data:image/png;base64,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" alt="健康证明二维码">                        </div>
+                        <div class="vertical-text">扫码验</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <a href="">
+            <div class="applyyj">申请邮寄</div>
+        </a>
+        <div class="applyyj bindid">绑定身份获取通知</div>
+        <div class="showCardImg">
+            <div class="showCardImgimg">
+                <div id="saveToImg">
+                    *长按电子健康证可保存到相册<div class="closeModel">关闭</div>
+                </div>
+                <img src=""/>
+            </div>
+        </div>
+        <div class="showCardImgMask"></div>
+        <div class="other-intro">
+        <!-- 医院介绍内容可以在这里添加 -->
+        </div>
+        <div class="page-foot">
+            <div id="tjyy">体检预约</div>
+            <div id="yyjs">医院介绍</div>
+        </div>
+    </body>
+</html>
