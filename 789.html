@@ -1,321 +1,579 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>唐文侨的健康证明-电子健康证查询</title>
-        <style>
-            body,html {
-                overflow-x: hidden
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康证明验证</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+        }
+
+        :root {
+            --primary-blue: #1a3d7c;
+            --secondary-green: #006837;
+            --light-gray: #f5f5f5;
+            --dark-gray: #333;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f7ff 100%);
+            color: var(--dark-gray);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            padding: 15px 0;
+            background: linear-gradient(to right, var(--primary-blue), #0d2c5e);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+            border-bottom: 4px solid var(--secondary-green);
+        }
+
+        h1 {
+            font-size: 2.3rem;
+            margin-bottom: 8px;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .input-area {
+            flex: 1;
+            min-width: 350px;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .preview-area {
+            flex: 1;
+            min-width: 350px;
+            padding: 25px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .certificate-container {
+            position: relative;
+            width: 500px;
+            min-height: 380px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+
+        .certificate-header {
+            background: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-bottom: 20px;
+        }
+
+        .certificate-title {
+            font-size: 26px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .certificate-body {
+            display: flex;
+            gap: 20px;
+            padding: 0 25px;
+        }
+
+        .certificate-info-section {
+            flex: 1;
+        }
+
+        .certificate-info {
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 8px 5px;
+            font-size: 10px;
+            margin-bottom: 12px;
+        }
+
+        .info-label {
+            color: var(--primary-blue);
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .info-value {
+            color: #000;
+            font-weight: 900;
+        }
+
+        .photo-section {
+            width: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .photo-placeholder {
+            width: 120px;
+            height: 150px;
+            background: var(--light-gray);
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 12px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .photo-placeholder img {
+            width: 120px;
+            height: 150px;
+            border-radius: 5px;
+        }
+
+        .stamp-container {
+            position: absolute;
+            top: 180px;
+            right: 30px;
+            opacity: 0.9;
+        }
+
+        .stamp {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #c00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #c00;
+            text-align: center;
+            line-height: 1.3;
+            transform: rotate(-15deg);
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+        }
+
+        .stamp::before {
+            content: "";
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            border: 1px solid #c00;
+            border-radius: 50%;
+        }
+
+        .certificate-footer {
+            margin-top: 25px;
+            padding: 15px 25px;
+            border-top: 1px solid #eee;
+            background: #f9f9f9;
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .qr-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        #qrCode {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 1px solid #ddd;
+        }
+
+        .footer-note {
+            color: #666;
+            font-size: 13px;
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 22px;
+            color: var(--primary-blue);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--secondary-green);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(26, 61, 124, 0.2);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .checkbox-group input {
+            width: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary-blue), #14336c);
+            color: white;
+            box-shadow: 0 4px 6px rgba(26, 61, 124, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(to right, #14336c, #0d2c5e);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(26, 61, 124, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background: #eaeaea;
+        }
+
+        .tips {
+            margin-top: 25px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary-blue);
+            font-size: 14px;
+        }
+
+        .tips p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .preview-title {
+            font-size: 22px;
+            color: var(--primary-blue);
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-green);
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px 15px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            transition: transform 0.3s ease;
+        }
+
+        .music-controls:hover {
+            transform: translateY(-5px);
+        }
+
+        .music-btn {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .music-btn:hover {
+            background: #0d2c5e;
+            transform: scale(1.1);
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 120px;
+        }
+
+        .volume-slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #d0d0d0;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            cursor: pointer;
+        }
+
+        .audio-info {
+            font-size: 12px;
+            color: #444;
+            margin-left: 5px;
+            white-space: nowrap;
+        }
+
+        @media (max-width:900px) {
+            .container {
+                flex-direction: column;
             }
 
-            body {
-                margin: 0;
-                padding: 0;
-                font-size: 12px;
-                padding-bottom: 40px
-            }
-
-            .hosp-intro,.other-intro {
-                padding: 10px
-            }
-
-            .hosp-intro img,.other-intro img {
-                width: 100%
-            }
-
-            .cardinfo {
-                display: flex;
-                justify-content: center;
-                margin: 20px 0 20px 0;
-                font-size: 14px
-            }
-
-            .cardinfo .card {
-                width: 350px;
-                height: 220px;
-                position: relative
-            }
-
-            .card .info {
-                width: 260px;
-                padding: 0 10px;
-                position: absolute;
-                z-index: 999
-            }
-
-            .card .card-bg {
-                position: absolute;
-                width: 350px;
-                height: 220px;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                border-radius: 10px
-            }
-
-            a {
-                text-decoration: none
-            }
-
-            .card .bh {
-                white-space: nowrap
-            }
-
-            .card .info * {
-                font-weight: bold;
-                font-size: 14px;
-                font-family: "仿宋",FangSong,STFangsong,serif
-            }
-
-            .card .xm span {
-                display: inline-block;
-                width: calc(50%)
-            }
-
-            .card .info div {
-                margin-bottom: 5px
-            }
-
-            .card .headimg {
-                position: absolute;
-                right: 12px;
-                top: 45px;
-                width: 80px;
-                height: 100px;
-                z-index: 999;
-                border-radius: 10px 10px 10px 10px
-            }
-
-            .cardinfo .hosp {
-                position: absolute;
-                bottom: 7px;
-                margin-left: 10px;
-                color: #fff;
-                z-index: 999
-            }
-
-            .page-foot {
-                position: fixed;
-                bottom: 0;
+            .certificate-container {
                 width: 100%;
-                display: flex;
-                justify-content: space-around;
-                height: 50px;
-                line-height: 50px;
-                border-top: 1px solid #f2f2f2;
-                text-align: center;
-                background-color: #fff
+                max-width: 500px;
             }
 
-            .page-foot div {
-                width: 50%;
-                border-right: 1px solid #f2f2f2
+            .input-area,
+            .preview-area {
+                min-width: 100%;
             }
 
-            .page-foot div:last-child {
-                border-right: 0px
+            .form-row {
+                flex-direction: column;
+                gap: 0;
             }
 
-            .cardinfo .ygqimg {
-                width: 120px;
-                position: absolute;
-                right: 100px;
-                top: calc(40% - 10px);
-                z-index: 1000;
-                opacity: 0.7
+            .volume-container {
+                width: 100px;
             }
+        }
 
-            .gz {
-                background-color: #5bc0de;
-                text-align: center;
-                padding: 10px 0;
-                line-height: 25px
-            }
+        .ygqimg {
+            width: 130px;
+            position: absolute;
+            left: calc(50%);
+            top: calc(60% - 60px);
+            z-index: 1000
+        }
+    </style>
+</head>
 
-            .gz a {
-                background-color: #fff;
-                display: inline-block;
-                padding: 0 15px;
-                border-radius: 15px;
-                cursor: pointer;
-                position: absolute;
-                right: 10px
-            }
+<body>
+    <section id="preview-area" class="preview-area">
+        <h2 class="preview-title">健康委员会监制</h2>
+        <div id="certificate" class="certificate-container">
+            <div class="certificate-header">
+                <div class="certificate-title">从业人员预防性健康检查合格证明</div>
+            </div>
 
-            .gz a:link {
-                color: #000;
-                text-decoration: none
-            }
-
-            .gz a:visited {
-                color: #000;
-                text-decoration: none
-            }
-
-            .gz a:hover {
-                color: #000;
-                text-decoration: none
-            }
-
-            .gz a:active {
-                color: #000;
-                text-decoration: none
-            }
-
-            .cardpic {
-                min-width: 350px
-            }
-
-            #qrcode {
-                width: 55px;
-                height: 55px;
-                z-index: 999;
-                border-radius: 5px;
-                background-color: blue
-            }
-
-            .qr-container {
-                display: flex;
-                align-items: center;
-                position: absolute;
-                gap: 3px;
-                right: 10px;
-                top: 155px;
-                width: fit-content;
-                z-index: 999;
-            }
-
-            .vertical-text {
-                writing-mode: vertical-rl;
-                text-orientation: upright;
-                font-size: 10px;
-                z-index: 999;
-                font-family: "仿宋",FangSong,STFangsong,serif
-            }
-
-            #qrcode canvas,#qrcode img {
-                width: 100%;
-                height: 100%
-            }
-
-            #saveToImg {
-                color: red;
-                margin-left: 20px;
-                padding: 10px 0
-            }
-
-            .applyyj {
-                text-align: center;
-                background-color: #eba753;
-                color: #ffffff;
-                height: 40px;
-                line-height: 40px;
-                border-radius: 10px;
-                width: calc(100% - 80px);
-                margin-left: 40px;
-                margin-top: 20px
-            }
-
-            .showCardImg {
-                z-index: 9999999;
-                position: fixed;
-                height: 100%;
-                width: 100%;
-                left: 0;
-                top: 0;
-                display: none
-            }
-
-            .showCardImgMask {
-                position: fixed;
-                z-index: 9998;
-                width: 100%;
-                height: 100%;
-                top: 0;
-                left: 0;
-                background-color: #515151;
-                opacity: 0.4;
-                overflow: none;
-                display: none
-            }
-
-            .showCardImgimg {
-                width: 80%;
-                margin-left: 10%;
-                margin-top: 20%;
-                background-color: #FFFFFF;
-                border-radius: 10px;
-                padding-bottom: 20px
-            }
-
-            .showCardImgimg img {
-                width: 100%
-            }
-
-            .closeModel {
-                float: right;
-                color: #007AFF;
-                padding: 0 20px
-            }
-        </style>
-    </head>
-    <body>
-        <section class="cardpic" id="certificatePreview">
-            <div class="cardinfo">
-                <div class="card">
-                    <div class="info">
-                        <div class="fzdw" style="margin-top: 40px">
-                            编 &emsp;号: <span id="previewId1">2607032911</span>
-                        </div>
-                        <div class="bh" style="margin-top: -3px">
-                            姓 &emsp;名: <span id="previewName">唐文侨</span>
-                        </div>
-                        <div class="bh" style="margin-top: -3px">
-                            从业类别: <span id="previewCategory">食品卫生</span>
-                        </div>
-                        <div class="fzri" style="margin-top: -3px">
-                            发证日期: <span id="previewDate">2026-07-31</span>
-                        </div>
-                        <div class="bh" style="margin-top: -3px">
-                            有效期限: <span id="previewDate2">一年</span>
-                        </div>
-                        <div class="bh" style="margin-top: -3px">体检项目: 肝功能 胸片 肠道致病菌检测</div>
-                        <div class="text" style="margin-top: -3px">
-                            发证单位: <span id="previewId">柳州市疾病预防控制中心</span>
-                        </div>
+            <div class="certificate-body">
+                <div class="certificate-info-section">
+                    <div class="certificate-info">
+                        <div class="info-label">编&emsp;&emsp;号：</div>
+                        <div id="previewNumber" class="info-value">510181199703236410</div>
                     </div>
+                    <div class="certificate-info">
+                        <div class="info-label">姓&emsp;&emsp;名：</div>
+                        <div id="previewName" class="info-value">唐文侨</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">性&emsp;&emsp;别：</div>
+                        <div id="previewGender" class="info-value">男</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">年&emsp;&emsp;龄：</div>
+                        <div id="previewAge" class="info-value">29</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">工&emsp;&emsp;种：</div>
+                        <div id="previewWorkType" class="info-value">食品相关类</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">检查结论：</div>
+                        <div class="info-value" style="color:#006837;font-weight:bold;">合格</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">发证日期：</div>
+                        <div id="previewIssueDate" class="info-value">2026-07-24</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">有效期：</div>
+                        <div id="previewValidity" class="info-value">一年</div>
+                    </div>
+                    <div class="certificate-info">
+                        <div class="info-label">发证机构：</div>
+                        <div id="previewOrganization" class="info-value">青岛市疾病预防控制中心</div>
+                    </div>
+                </div>
 
-                    <img id="previewPhotoImg" src="789.png" class="headimg"/>
-                    <img src="dingyi.png" class="ygqimg"/>
-                    <img src="lz.png" class="card-bg"/>
-                    <div class="qr-container">
-                        <div id="qrcode">
-                            <img src="data:image/png;base64,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" alt="健康证明二维码">                        </div>
-                        <div class="vertical-text">扫码验</div>
+                <div class="photo-section">
+                    <div class="photo-placeholder">
+                        <img id="previewPhotoImg" src="789.png" class="headimg" />
                     </div>
                 </div>
             </div>
-        </section>
-        <a href="">
-            <div class="applyyj">申请邮寄</div>
+            <img src="zdyyz.png" class="ygqimg" />
+        </div>
+
+        <div class="certificate-footer">
+            <div class="qr-section">
+                <div id="qrCode">
+                    <img src="data:image/png;base64,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"
+                        alt="健康证明二维码" class="qrcode-img" style="display: block; width: 80px; height: 80px;">
+                </div>
+                <div class="qr-text">
+                    <div style="font-weight: bold; color: var(--primary-blue);">验证二维码查验真伪</div>
+                    <div style="font-size: 12px; color: #666;">扫描验证健康证信息</div>
+                </div>
+            </div>
+            <div class="footer-note">此健康证信息已上报平台 </div>
+        </div>
+        </div>
+        <a href="#" onclick="
+                            const win = window.open('', '_blank');
+                            setTimeout(() => {
+                            win.location.href = 'https://www.qmtj.net/029';
+                            }, 300);
+                            return false;
+                        " rel="noopener noreferrer" style="color: #666; text-decoration: underline;">
+            <i></i> 🔍全国体检机构查询
         </a>
-        <div class="applyyj bindid">绑定身份获取通知</div>
-        <div class="showCardImg">
-            <div class="showCardImgimg">
-                <div id="saveToImg">
-                    *长按电子健康证可保存到相册<div class="closeModel">关闭</div>
-                </div>
-                <img src=""/>
-            </div>
-        </div>
-        <div class="showCardImgMask"></div>
-        <div class="other-intro">
-        <!-- 医院介绍内容可以在这里添加 -->
-        </div>
-        <div class="page-foot">
-            <div id="tjyy">体检预约</div>
-            <div id="yyjs">医院介绍</div>
-        </div>
-    </body>
-</html>
+        <button id="downloadBtn" class="btn btn-primary hide" style="margin-top:25px;padding: 12px 20px;width: auto;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path
+                    d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z" />
+                <path
+                    d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z" />
+            </svg>
+            下载健康证图片
+        </button>
+
+        </p>
+    </section>
+
+</body>
